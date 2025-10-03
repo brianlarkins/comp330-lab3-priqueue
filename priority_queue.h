@@ -22,4 +22,4 @@ void pq_init(priority_queue_t *pq, int capacity);
 void pq_destroy(priority_queue_t *pq);
 
 void pq_enqueue(priority_queue_t *pq, int item, int priority, int tid);
-int pq_dequeue(priority_queue_t *pq, int *priority_out, int tid);
+int  pq_dequeue(priority_queue_t *pq, int *priority_out, int tid);
