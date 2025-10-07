@@ -113,14 +113,14 @@ void pq_destroy(priority_queue_t *pq) {
  * @param tid the thread id for logging
  */
 void pq_enqueue(priority_queue_t *pq, int item, int priority, int tid) {
-  printf("enqueue %d locking\n", tid);
+  dprint("enqueue %d locking\n", tid);
   pthread_mutex_lock(&pq->lock);
 
-  printf("enqueue %d size %d cap %d\n", tid, pq->size, pq->capacity);
+  dprint("enqueue %d size %d cap %d\n", tid, pq->size, pq->capacity);
   while (pq->size == pq->capacity) {
-    printf("enqueue %d waiting\n", tid);
+    dprint("enqueue %d waiting\n", tid);
     pthread_cond_wait(&pq->not_full, &pq->lock);
-    printf("enqueue %d waking\n", tid);
+    dprint("enqueue %d waking\n", tid);
   }
 
   pq->data[pq->size].item = item;
@@ -134,10 +134,10 @@ void pq_enqueue(priority_queue_t *pq, int item, int priority, int tid) {
     fflush(g.logfile);
   }
 
-  printf("enqueue %d signaling consumer\n", tid);
+  dprint("enqueue %d signaling consumer\n", tid);
   pthread_cond_signal(&pq->not_empty);
   pthread_mutex_unlock(&pq->lock);
-  printf("enqueue %d yielding\n", tid);
+  dprint("enqueue %d yielding\n", tid);
 }
 
 
@@ -151,14 +151,14 @@ void pq_enqueue(priority_queue_t *pq, int item, int priority, int tid) {
  * @return the dequeued item
  */
 int pq_dequeue(priority_queue_t *pq, int *priority_out, int tid) {
-  printf("dequeue %d locking\n", tid);
+  dprint("dequeue %d locking\n", tid);
   pthread_mutex_lock(&pq->lock);
 
-  printf("dequeue %d size %d cap %d\n", tid, pq->size, pq->capacity);
+  dprint("dequeue %d size %d cap %d\n", tid, pq->size, pq->capacity);
   while (pq->size == 0) {
-    printf("dequeue %d waiting\n", tid);
+    dprint("dequeue %d waiting\n", tid);
     pthread_cond_wait(&pq->not_empty, &pq->lock);
-    printf("dequeue %d waking\n", tid);
+    dprint("dequeue %d waking\n", tid);
   }
 
   int item = pq->data[0].item;
@@ -174,10 +174,10 @@ int pq_dequeue(priority_queue_t *pq, int *priority_out, int tid) {
     fflush(g.logfile);
   }
 
-  printf("dequeue %d signaling producer\n", tid);
+  dprint("dequeue %d signaling producer\n", tid);
   pthread_cond_signal(&pq->not_full);
   pthread_mutex_unlock(&pq->lock);
-  printf("dequeue %d yielding\n", tid);
+  dprint("dequeue %d yielding\n", tid);
 
   return item;
 }
